@@ -1,0 +1,3 @@
+export {
+  JsSipAdapter,
+} from './jssip';
