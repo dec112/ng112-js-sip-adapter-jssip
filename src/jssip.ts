@@ -1,8 +1,5 @@
-// we import node version as it does not make any difference to importing the browser version
-import { DelegateObject, SipAdapter as SipAdapter, SipAdapterConfig, Origin, getUserAgentString } from 'ng112-js/dist/node';
+import { DelegateObject, SipAdapter, SendMessageOptions, SipAdapterConfig, Origin, getUserAgentString } from 'ng112-js/dist/adapter';
 import jssip from 'jssip';
-import { SendMessageOptions } from 'jssip/lib/Message';
-
 import { Socket, WebSocketInterface } from 'jssip';
 
 const getSocketInterface = (endpoint: string): Socket => {
