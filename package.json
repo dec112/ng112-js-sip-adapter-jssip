@@ -3,6 +3,9 @@
   "version": "0.1.1",
   "license": "AGPL-3.0-only",
   "author": "Gabriel Unterholzer <gabriel.unterholzer@dec112.at> (https://www.dec112.at)",
+  "main": "dist/index.js",
+  "module": "dist/ng112-js-sip-adapter-jssip.esm.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
