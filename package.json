@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "jssip": "^3.7.5",
-    "ng112-js": "^2.0.0-dev.6"
+    "ng112-js": "^2.0.0-dev.8"
   },
   "devDependencies": {
     "@types/jssip": "^3.3.1",
