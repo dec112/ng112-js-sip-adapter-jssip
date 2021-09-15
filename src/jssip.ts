@@ -68,20 +68,36 @@ export class JsSipAdapter implements SipAdapter {
           const { request } = message;
 
           callback({
-            hasHeader: (name) => request.hasHeader(name),
-            getHeader: (name) => request.getHeader(name),
-            getHeaders: (name) => request.getHeaders(name),
-            body: request.body,
-            from: {
-              displayName: request.from.display_name,
-              get uri() { return request.from.uri },
+            accept: async (options) => {
+              message.message.accept({
+                body: options?.body,
+                extraHeaders: options?.extraHeaders,
+              })
             },
-            to: {
-              displayName: request.to.display_name,
-              get uri() { return request.to.uri },
+            reject: async (options) => {
+              message.message.reject({
+                body: options?.body,
+                reason_phrase: options?.reasonPhrase ?? '',
+                extraHeaders: options?.extraHeaders,
+                status_code: options?.statusCode ? [options.statusCode] : undefined,
+              })
             },
-            origin: message.originator as Origin,
-            sipStackMessage: message,
+            request: {
+              hasHeader: (name) => request.hasHeader(name),
+              getHeader: (name) => request.getHeader(name),
+              getHeaders: (name) => request.getHeaders(name),
+              body: request.body,
+              from: {
+                displayName: request.from.display_name,
+                get uri() { return request.from.uri },
+              },
+              to: {
+                displayName: request.to.display_name,
+                get uri() { return request.to.uri },
+              },
+              origin: message.originator as Origin,
+              sipStackMessage: message,
+            }
           });
         })
       },
