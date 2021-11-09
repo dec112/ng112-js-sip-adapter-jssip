@@ -1,7 +1,6 @@
-// we import node version as it does not make any difference to importing the browser version
-import { DelegateObject, SipAdapter, SendMessageOptions, SipAdapterConfig, Origin, getUserAgentString } from 'ng112-js/dist/node';
-import jssip from 'jssip';
-import { Socket, WebSocketInterface } from 'jssip';
+import { DelegateObject, SipAdapter, SendMessageOptions, SipAdapterConfig, Origin } from 'ng112-js';
+import jssip, { Socket, WebSocketInterface } from 'jssip';
+import { IncomingMessageEvent, OutgoingMessageEvent } from 'jssip/lib/UA';
 
 const getSocketInterface = (endpoint: string): Socket => {
   // there are no types for NodeWebsocket
@@ -34,6 +33,7 @@ export class JsSipAdapter implements SipAdapter {
     displayName,
     originSipUri,
     logger,
+    userAgent,
   }: SipAdapterConfig) {
     // TODO: check all inputs here
     // otherwise they might cause exceptions and we think the module is not available
@@ -52,7 +52,7 @@ export class JsSipAdapter implements SipAdapter {
       realm: domain,
       display_name: displayName,
       register: true,
-      user_agent: getUserAgentString('JsSIP', jssip.version),
+      user_agent: `${userAgent} JsSIP/${jssip.version}`,
     });
 
     this.delegate = {
@@ -63,8 +63,7 @@ export class JsSipAdapter implements SipAdapter {
       onUnregister: (callback) => { this._agent.on('unregistered', callback) },
       onRegistrationFail: (callback) => { this._agent.on('registrationFailed', callback) },
       onNewMessage: (callback) => {
-        this._agent.on('newMessage', (_: any) => {
-          const message: JsSIP.UserAgentNewMessageEvent = _;
+        this._agent.on('newMessage', (message: IncomingMessageEvent | OutgoingMessageEvent) => {
           const { request } = message;
 
           callback({
@@ -79,7 +78,7 @@ export class JsSipAdapter implements SipAdapter {
                 body: options?.body,
                 reason_phrase: options?.reasonPhrase ?? '',
                 extraHeaders: options?.extraHeaders,
-                status_code: options?.statusCode ? [options.statusCode] : undefined,
+                status_code: options?.statusCode ? options.statusCode : undefined,
               })
             },
             request: {
@@ -95,7 +94,8 @@ export class JsSipAdapter implements SipAdapter {
                 displayName: request.to.display_name,
                 get uri() { return request.to.uri },
               },
-              origin: message.originator as Origin,
+              // this is fine :-)
+              origin: message.originator as unknown as Origin,
               sipStackMessage: message,
             }
           });
