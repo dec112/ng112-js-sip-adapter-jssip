@@ -1,4 +1,4 @@
-import { DelegateObject, SipAdapter, SendMessageOptions, SipAdapterConfig, Origin } from 'ng112-js';
+import { DelegateObject, SipAdapter, SendMessageOptions, SipAdapterConfig, Origin, MessageError } from 'ng112-js';
 import jssip, { Socket, WebSocketInterface } from 'jssip';
 import { IncomingMessageEvent, OutgoingMessageEvent } from 'jssip/lib/UA';
 
@@ -145,7 +145,14 @@ export class JsSipAdapter implements SipAdapter {
           eventHandlers: {
             // TODO: include return object here
             succeeded: () => resolve(),
-            failed: (evt) => reject(evt),
+            failed: (evt) => {
+              const error: MessageError = {
+                code: evt.response.status_code,
+                // JsSIP Originator has the exact same structure as ng112-js Origin
+                origin: evt.originator as unknown as Origin,
+              };
+              reject(error);
+            },
           }
         });
       } catch {
