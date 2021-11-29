@@ -96,7 +96,7 @@ export class JsSipAdapter implements SipAdapter {
               },
               // this is fine :-)
               origin: message.originator as unknown as Origin,
-              sipStackMessage: message,
+              sipStackObject: message,
             }
           });
         })
@@ -147,9 +147,11 @@ export class JsSipAdapter implements SipAdapter {
             succeeded: () => resolve(),
             failed: (evt) => {
               const error: MessageError = {
-                code: evt.response.status_code,
                 // JsSIP Originator has the exact same structure as ng112-js Origin
                 origin: evt.originator as unknown as Origin,
+                reason: evt.cause?.toString() ?? evt.response.reason_phrase,
+                statusCode: evt.response.status_code,
+                sipStackObject: evt,
               };
               reject(error);
             },
