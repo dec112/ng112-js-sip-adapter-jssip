@@ -1,6 +1,7 @@
 import { DelegateObject, SipAdapter, SendMessageOptions, SipAdapterConfig, Origin, MessageError } from 'ng112-js';
 import jssip, { Socket, WebSocketInterface } from 'jssip';
 import { IncomingMessageEvent, OutgoingMessageEvent } from 'jssip/lib/UA';
+import { IncomingResponse } from 'jssip/lib/SIPMessage';
 
 const getSocketInterface = (endpoint: string): Socket => {
   // there are no types for NodeWebsocket
@@ -146,12 +147,14 @@ export class JsSipAdapter implements SipAdapter {
             // TODO: include return object here
             succeeded: () => resolve(),
             failed: (evt) => {
+              // evt.response can be null, even though types state otherwise...
+              const response: IncomingResponse = evt.response || {};
+
               const error: MessageError = {
                 // JsSIP Originator has the exact same structure as ng112-js Origin
                 origin: evt.originator as unknown as Origin,
-                // evt.response can be null, even though types state otherwise...
-                reason: (evt.response && evt.response.reason_phrase) ? evt.response.reason_phrase : evt.cause?.toString() ?? 'Internal Server Error',
-                statusCode: evt.response.status_code,
+                reason: response.reason_phrase || evt.cause?.toString() || 'Internal Server Error',
+                statusCode: response.status_code || 500,
                 sipStackObject: evt,
               };
               reject(error);
