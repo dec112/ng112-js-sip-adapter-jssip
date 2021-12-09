@@ -149,7 +149,8 @@ export class JsSipAdapter implements SipAdapter {
               const error: MessageError = {
                 // JsSIP Originator has the exact same structure as ng112-js Origin
                 origin: evt.originator as unknown as Origin,
-                reason: evt.response.reason_phrase ?? evt.cause?.toString(),
+                // evt.response can be null, even though types state otherwise...
+                reason: (evt.response && evt.response.reason_phrase) ? evt.response.reason_phrase : evt.cause?.toString() ?? 'Internal Server Error',
                 statusCode: evt.response.status_code,
                 sipStackObject: evt,
               };
