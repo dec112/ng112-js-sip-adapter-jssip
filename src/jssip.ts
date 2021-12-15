@@ -1,6 +1,6 @@
 import { DelegateObject, SipAdapter, SendMessageOptions, SipAdapterConfig, Origin, MessageError } from 'ng112-js';
 import jssip, { Socket, WebSocketInterface } from 'jssip';
-import { IncomingMessageEvent, OutgoingMessageEvent } from 'jssip/lib/UA';
+import { IncomingMessageEvent, OutgoingMessageEvent, UAConfiguration } from 'jssip/lib/UA';
 import { IncomingResponse } from 'jssip/lib/SIPMessage';
 
 const getSocketInterface = (endpoint: string): Socket => {
@@ -21,21 +21,23 @@ const getSocketInterface = (endpoint: string): Socket => {
 }
 
 export class JsSipAdapter implements SipAdapter {
-  static factory = (config: SipAdapterConfig) => new JsSipAdapter(config);
+  static factory = (config: SipAdapterConfig & Partial<UAConfiguration>) => new JsSipAdapter(config);
 
   private _agent: jssip.UA;
   public delegate: DelegateObject
 
-  constructor({
-    endpoint,
-    domain,
-    user,
-    password,
-    displayName,
-    originSipUri,
-    logger,
-    userAgent,
-  }: SipAdapterConfig) {
+  constructor(config: SipAdapterConfig & Partial<UAConfiguration>) {
+    const {
+      endpoint,
+      domain,
+      user,
+      password,
+      displayName,
+      originSipUri,
+      logger,
+      userAgent,
+    } = config;
+
     // TODO: check all inputs here
     // otherwise they might cause exceptions and we think the module is not available
 
@@ -44,6 +46,8 @@ export class JsSipAdapter implements SipAdapter {
     jssip.debug[logger.isActive() && logger.isFallback() ? 'enable' : 'disable']('JsSIP:*');
 
     this._agent = new jssip.UA({
+      ...config,
+
       sockets: [
         getSocketInterface(endpoint),
       ],
