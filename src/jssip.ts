@@ -147,6 +147,8 @@ export class JsSipAdapter implements SipAdapter {
         // therfore we have to call URI.parse (which is a jssip function!) to ensure correct transmission
         this._agent.sendMessage(jssip.URI.parse(target), body, {
           ...options,
+          // one can specify a custom display name that takes precedence over the agent's display name
+          fromDisplayName: options?.displayName,
           eventHandlers: {
             // TODO: include return object here
             succeeded: () => resolve(),
