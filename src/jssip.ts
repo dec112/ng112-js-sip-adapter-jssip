@@ -46,8 +46,6 @@ export class JsSipAdapter implements SipAdapter {
     jssip.debug[logger.isActive() && logger.isFallback() ? 'enable' : 'disable']('JsSIP:*');
 
     this._agent = new jssip.UA({
-      ...config,
-
       sockets: [
         getSocketInterface(endpoint),
       ],
@@ -57,6 +55,10 @@ export class JsSipAdapter implements SipAdapter {
       realm: domain,
       display_name: displayName,
       register: true,
+      
+      ...config,
+
+      // user agent must not be overwritten
       user_agent: `${userAgent} JsSIP/${jssip.version}`,
     });
 
