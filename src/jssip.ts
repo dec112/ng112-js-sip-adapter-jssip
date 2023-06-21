@@ -167,8 +167,8 @@ export class JsSipAdapter implements SipAdapter {
             },
           }
         });
-      } catch {
-        reject();
+      } catch (e) {
+        reject(e);
       }
     });
   }
