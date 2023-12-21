@@ -145,7 +145,12 @@ export class JsSipAdapter implements SipAdapter {
       try {
         // we can not just pass the plain string to `sendMessage` as this causes problems with encoded parameters
         // therfore we have to call URI.parse (which is a jssip function!) to ensure correct transmission
-        this._agent.sendMessage(jssip.URI.parse(target), body, {
+        const targetUri = jssip.URI.parse(target);
+        // throw an exception if targetUri is undefined
+        if (!targetUri)
+          throw new Error(`Target URI could not be parsed: ${target}`);
+
+        this._agent.sendMessage(targetUri, body, {
           ...options,
           // one can specify a custom display name that takes precedence over the agent's display name
           fromDisplayName: options?.displayName,
