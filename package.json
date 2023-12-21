@@ -32,13 +32,13 @@
     "jssip": "^3.9.0"
   },
   "devDependencies": {
-    "ng112-js": "^2.0.0-dev.39",
+    "ng112-js": "^2.0.0-beta.1",
     "tsdx": "^0.14.1",
     "tslib": "^2.0.3",
     "typescript": "^4.2.2"
   },
   "peerDependencies": {
     "jssip-node-websocket": "~3",
-    "ng112-js": "^2.0.0-dev.39"
+    "ng112-js": "^2.0.0-beta.1"
   }
 }
