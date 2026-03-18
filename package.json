@@ -3,9 +3,9 @@
   "version": "0.6.4",
   "license": "AGPL-3.0-only",
   "author": "Gabriel Unterholzer <gabriel.unterholzer@dec112.at> (https://www.dec112.at)",
-  "main": "dist/index.js",
-  "module": "dist/ng112-js-sip-adapter-jssip.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/main/index.js",
+  "module": "dist/module/index.js",
+  "types": "dist/main/index.d.ts",
   "files": [
     "dist"
   ],
@@ -13,32 +13,22 @@
     "type": "git",
     "url": "git@github.com:dec112/ng112-js-sip-adapter-jssip.git"
   },
-  "engines": {
-    "node": ">=10"
-  },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "lint": "tsdx lint",
+    "build": "npm run build:main && npm run build:module",
+    "build:main": "tsc --module commonjs --outDir ./dist/main",
+    "build:module": "tsc --module esnext --outDir ./dist/module",
     "prepublishOnly": "npm run build"
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
   },
   "dependencies": {
     "jssip": "^3.9.0"
   },
   "devDependencies": {
-    "ng112-js": "^2.0.0-beta.1",
-    "tsdx": "^0.14.1",
+    "ng112-js": "^2.0.0-beta.5",
     "tslib": "^2.0.3",
-    "typescript": "^4.2.2"
+    "typescript": "^4.9.5"
   },
   "peerDependencies": {
     "jssip-node-websocket": "~3",
-    "ng112-js": "^2.0.0-beta.1"
+    "ng112-js": "^2.0.0-beta.5"
   }
 }
